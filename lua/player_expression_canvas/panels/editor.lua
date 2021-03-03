@@ -3,6 +3,7 @@ local binds = {}
 local call_translate_position = false
 local cursor_start_x, cursor_start_y
 local cursor_translate_x, cursor_translate_y
+local moving = false
 local PANEL = {}
 local speed = 1
 local translate_position = vector_origin
@@ -10,21 +11,29 @@ local think_time = RealTime()
 local thinking_binds = {}
 
 --local tables
+--optimization: we don't have to make this per panel since only one of this panel should ever be open
 local default_frames = {
 	{
-		class = "TextureEditor",
-		pos = {ScrW() - 512, 0}
+		class = "SubmaterialSelector",
+		pos = {ScrW() * 0.5, 0}
 	}
 }
+
+local move_unthinks = {"+back", "+forward", "+jump", "+moveleft", "+moveright"}
 
 local bind_press_functions = {
 	["+attack"] = function(self)
 		cursor_start_x, cursor_start_y = ScrW() * 0.5, ScrH() * 0.5
+		moving = true
 		
 		RememberCursorPosition()
 		input.SetCursorPos(cursor_start_x, cursor_start_y)
+		
+		self:MouseCapture(true)
 		self:SetCursor("blank")
 	end,
+	
+	["+reload"] = function(self) if not moving then hook.Call("PecaneResetCamera", PECAN, false) end end,
 	
 	toggleconsole = function(self)
 		self:Remove()
@@ -35,11 +44,19 @@ local bind_press_functions = {
 
 local bind_release_functions = {
 	["+attack"] = function(self)
-		RestoreCursorPosition()
+		moving = false
 		
+		RestoreCursorPosition()
 		hook.Call("PecaneTranslateAnglesFinish", PECAN, self)
 		
+		self:MouseCapture(false)
 		self:SetCursor("arrow")
+		
+		--release keys for movement, so we don't accidentally move after we release
+		for index, bind in ipairs(move_unthinks) do
+			binds[bind] = nil
+			thinking_binds[bind] = nil
+		end
 	end
 }
 
@@ -53,17 +70,23 @@ local bind_think_functions = {
 	
 	["+back"] = function(self)
 		call_translate_position = true
-		translate_position = translate_position - Vector(speed, 0, 0)
+		
+		if moving then translate_position = translate_position - Vector(speed, 0, 0)
+		else translate_position = translate_position - Vector(0, 0, speed) end
 	end,
 	
 	["+forward"] = function(self)
 		call_translate_position = true
-		translate_position = translate_position + Vector(speed, 0, 0)
+		
+		if moving then translate_position = translate_position + Vector(speed, 0, 0)
+		else translate_position = translate_position + Vector(0, 0, speed) end
 	end,
 	
 	["+jump"] = function(self)
-		call_translate_position = true
-		translate_position = translate_position + Vector(0, 0, speed)
+		if moving then
+			call_translate_position = true
+			translate_position = translate_position + Vector(0, 0, speed)
+		end
 	end,
 	
 	["+moveleft"] = function(self)
@@ -88,6 +111,8 @@ local function bind_call(self, code, press)
 end
 
 --panel functions
+function PANEL:GenerateExample() end
+
 function PANEL:Init()
 	local exiting_panel = GetHUDPanel():Find("PecanEditor")
 	
@@ -140,7 +165,6 @@ function PANEL:Init()
 		end
 	end
 	
-	--self:MouseCapture(true)
 	self:SetFocusTopLevel(true)
 	self:SetName("PecanEditor")
 	self:SetParent(GetHUDPanel())
@@ -159,10 +183,13 @@ function PANEL:OnBindPressed(bind)
 end
 
 function PANEL:OnBindReleased(bind, closing)
-	if bind_release_functions[bind] then bind_release_functions[bind](self, closing) end
-	
-	binds[bind] = nil
-	thinking_binds[bind] = nil
+	--we don't want releases from other panels
+	if binds[bind] then
+		if bind_release_functions[bind] then bind_release_functions[bind](self, closing) end
+		
+		binds[bind] = nil
+		thinking_binds[bind] = nil
+	end
 end
 
 function PANEL:OnKeyCodePressed(code) bind_call(self, code, true) end
@@ -186,7 +213,7 @@ end
 function PANEL:Paint(width, height)
 	local clipping = DisableClipping(true)
 	
-	surface.SetDrawColor(20, 20, 20, 255)
+	surface.SetDrawColor(20, 20, 20)
 	surface.DrawRect(0, 0, width, height)
 	
 	hook.Call("PecaneRender", PECAN, self, width, height)

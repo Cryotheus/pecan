@@ -2,17 +2,13 @@ local editor_open = false
 
 --pecan functions
 function PECAN:PecaneOpen()
-	print("opened")
-	
 	editor_open = true
 	
-	self.Editor = vgui.Create("PecanEditor")
 	self.EditorModel = hook.Call("PecaneCreateModel", self)
+	self.Editor = vgui.Create("PecanEditor")
 end
 
 function PECAN:PecaneClose()
-	print("closed")
-	
 	editor_open = false
 	
 	self.Editor = nil
