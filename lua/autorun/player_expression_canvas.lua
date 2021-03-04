@@ -26,7 +26,8 @@ local config = {
 		},
 		
 		client = 13,	--1 101
-		server = 10		--1 010
+		server = 10,	--1 010
+		skin = 5		--0 101
 	}
 }
 
