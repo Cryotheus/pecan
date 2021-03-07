@@ -43,6 +43,7 @@ function PANEL:AddTextures(material)
 						texture_editor = vgui.Create("PecanTextureEditor", PECAN.Editor)
 						texture_editor.TextureSelector = self
 						
+						texture_editor:SetPos(hook.Call("PecaneOpenPanel", PECAN, self, texture_editor))
 						texture_editor:SetTexture(texture)
 						texture_editor:SetTitle("Texture Editor - " .. button_text)
 						
@@ -75,6 +76,7 @@ function PANEL:Init()
 	self:SetMouseInputEnabled(true)
 	self:SetSizable(true)
 	self:SetSize(width, height)
+	self:SetSkin("Pecan")
 	self:SetTitle("Texture Selector")
 	
 	do --scroll panel

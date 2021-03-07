@@ -14,8 +14,7 @@ local thinking_binds = {}
 --optimization: we don't have to make this per panel since only one of this panel should ever be open
 local default_frames = {
 	{
-		class = "SubmaterialSelector",
-		pos = {ScrW() * 0.5, 0}
+		class = "SubmaterialSelector"
 	}
 }
 
@@ -126,6 +125,7 @@ function PANEL:Init()
 		header:Dock(TOP)
 		header:SetHeight(self.HeaderHeight)
 		header:SetMouseInputEnabled(true)
+		header:SetSkin("Pecan")
 		
 		header.Editor = self
 		self.Header = header
@@ -158,7 +158,7 @@ function PANEL:Init()
 					local x, y = unpack(frame_data.pos)
 					
 					frame:SetPos(x, y + self.HeaderHeight)
-				else frame:SetPos(0, self.HeaderHeight) end
+				else frame:SetPos(hook.Call("PecaneOpenPanel", PECAN, self, frame)) end
 				
 				if frame_data.size then frame:SetSize(unpack(frame_data.size)) end
 			end
@@ -170,6 +170,7 @@ function PANEL:Init()
 	self:SetParent(GetHUDPanel())
 	self:SetPos(0, 0)
 	self:SetSize(ScrW(), ScrH())
+	self:SetSkin("Pecan")
 	
 	self:MakePopup()
 	self:DoModal()

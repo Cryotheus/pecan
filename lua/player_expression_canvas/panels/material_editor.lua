@@ -2,7 +2,7 @@ local PANEL = {}
 
 --panel funcitons
 function PANEL:Init()
-	
+	self:SetSkin("Pecan")
 end
 
 --post

@@ -13,6 +13,7 @@ function PANEL:Init()
 	self:SetMouseInputEnabled(true)
 	self:SetSizable(true)
 	self:SetSize(width, height)
+	self:SetSkin("Pecan")
 	self:SetTitle("Texture Editor")
 	
 	do --texture canvas

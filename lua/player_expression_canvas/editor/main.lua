@@ -1,4 +1,5 @@
 local editor_open = false
+local panels_opened = 0
 
 --pecan functions
 function PECAN:PecaneOpen()
@@ -6,6 +7,15 @@ function PECAN:PecaneOpen()
 	
 	self.EditorModel = hook.Call("PecaneCreateModel", self)
 	self.Editor = vgui.Create("PecanEditor")
+end
+
+function PECAN:PecaneOpenPanel(parent, panel)
+	panels_opened = panels_opened + 1
+	
+	local x = panels_opened % 16 * 16
+	local y = panels_opened % 16 * 24 + 24
+	
+	return x, y
 end
 
 function PECAN:PecaneClose()

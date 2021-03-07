@@ -7,6 +7,7 @@ local start_y = 0
 function PANEL:Init()
 	self:SetKeyboardInputEnabled(true)
 	self:SetMouseInputEnabled(true)
+	self:SetSkin("Pecan")
 	
 	self.FirstLayout = true
 	self.TextureSize = 256

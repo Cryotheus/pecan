@@ -32,6 +32,7 @@ function PANEL:AddSubmaterials(entity)
 					texture_selector.SubmaterialSelector = self
 					
 					texture_selector:AddTextures(material_path)
+					texture_selector:SetPos(hook.Call("PecaneOpenPanel", PECAN, self, texture_selector))
 					texture_selector:SetTitle("Texture Selector - " .. button_text)
 					
 					self.TextureSelector = texture_selector
@@ -62,6 +63,7 @@ function PANEL:Init()
 	self:SetMouseInputEnabled(true)
 	self:SetSizable(true)
 	self:SetSize(width, height)
+	self:SetSkin("Pecan")
 	self:SetTitle("Submaterial Selector")
 	
 	do --scroll panel
