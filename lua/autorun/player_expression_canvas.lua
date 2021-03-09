@@ -8,6 +8,7 @@ local config = {
 	player_expression_canvas = {
 		panels = {
 			editor = 5,
+			frame = 5,
 			material = 5,
 			material_display = 5,
 			material_editor = 5,
@@ -93,19 +94,21 @@ local function load_by_order()
 	end
 end
 
-local function load_scripts()
+local function load_scripts(command_reload)
 	MsgC(color_print_white, "\n\\\\\\ ", color_print_red, "PECan", color_print_white, " ///\n\nConstructing load order...\n")
 	construct_order(config, 1, "")
 	MsgC(color_print_red, "\nConstructed load order.\n\nLoading scripts by load order...\n")
 	load_by_order()
 	MsgC(color_print_red, "\nLoaded scripts.\n\n", color_print_white, "/// ", color_print_red, "All scripts loaded.", color_print_white, " \\\\\\\n\n")
+	
+	hook.Call("PecanLoaded", PECAN, command_reload)
 end
 
 --concommands
 concommand.Add("pecan_reload", function(ply)
 	--is it possible to run a command from client and execute the serverside command when the command is shared?
-	if not IsValid(ply) or ply:IsSuperAdmin() or LocalPlayer and ply == LocalPlayer() then load_scripts() end
+	if not IsValid(ply) or ply:IsSuperAdmin() or LocalPlayer and ply == LocalPlayer() then load_scripts(true) end
 end, nil, "Reload all Pecan scripts.")
 
 --post function setup
-load_scripts()
+load_scripts(false)

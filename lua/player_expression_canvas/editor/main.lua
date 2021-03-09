@@ -2,6 +2,7 @@ local editor_open = false
 local panels_opened = 0
 
 --pecan functions
+--we prefix with Pecan or Pecane to prevent conflicts with other hooks
 function PECAN:PecaneOpen()
 	editor_open = true
 	

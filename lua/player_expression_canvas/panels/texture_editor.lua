@@ -13,7 +13,6 @@ function PANEL:Init()
 	self:SetMouseInputEnabled(true)
 	self:SetSizable(true)
 	self:SetSize(width, height)
-	self:SetSkin("Pecan")
 	self:SetTitle("Texture Editor")
 	
 	do --texture canvas
@@ -48,7 +47,11 @@ function PANEL:Init()
 	end
 end
 
-function PANEL:OnRemove() if self.TextureSelector and self.TextureSelector.TextureEditor == self then self.TextureSelector.TextureEditor = nil end end
+function PANEL:OnRemove()
+	self:OnRemoveInternal()
+	
+	if self.TextureSelector and self.TextureSelector.TextureEditor == self then self.TextureSelector.TextureEditor = nil end
+end
 
 function PANEL:PerformLayout(width, height)
 	self:PerformLayoutInternal(width, height)
@@ -59,4 +62,4 @@ end
 function PANEL:SetTexture(...) return self.Canvas:SetTexture(...) end
 
 --post
-derma.DefineControl("PecanTextureEditor", "A frame to editor textures for Pecan.", PANEL, "DFrame")
+derma.DefineControl("PecanTextureEditor", "A frame to editor textures for Pecan.", PANEL, "PecanFrame")

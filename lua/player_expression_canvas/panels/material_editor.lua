@@ -1,9 +1,7 @@
 local PANEL = {}
 
 --panel funcitons
-function PANEL:Init()
-	self:SetSkin("Pecan")
-end
+function PANEL:Init() end
 
 --post
-derma.DefineControl("PecanMaterialEditor", "A material editor for Pecan.", PANEL, "DPanel")
+derma.DefineControl("PecanMaterialEditor", "A material editor for Pecan.", PANEL, "PecanFrame")

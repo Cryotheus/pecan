@@ -1,7 +1,9 @@
 local color_functions = {
 	PaintActiveTab = Color(0, 0, 255),
 	PaintPanel = Color(40, 40, 44),
-	PaintTree = {color = Color(255, 255, 0), keyed = "m_bBackground"}
+	PaintTree = {color = Color(255, 255, 0), keyed = "m_bBackground"},
+	PaintWindowMinimizeButton = false,
+	PaintWindowMaximizeButton = false
 }
 
 local default_skin = derma.GetNamedSkin("Default")
@@ -78,8 +80,17 @@ local SKIN = {
 	button_dead =		Color(54, 54, 60),
 	button_down =		Color(80, 80, 224),
 	button_hovered =	Color(80, 80, 90),
-	frame =				Color(50, 50, 54),
-	frame_unfocused =	Color(45, 45, 50),
+	
+	close_button_down =		Color(224, 0, 0),
+	close_button_dead =		Color(54, 54, 60),
+	close_button_hovered =	Color(192, 48, 48),
+	close_button =			Color(192, 0, 0),
+	
+	frame =						Color(50, 50, 54),
+	frame_header =				Color(60, 60, 65),
+	frame_header_unfocused =	Color(54, 54, 60),
+	frame_unfocused =			Color(45, 45, 50),
+	
 	shadow =			Color(0, 0, 0, 128),
 	
 	--[[text_bright =		Color(255, 255, 255),
@@ -161,10 +172,21 @@ function SKIN:PaintFrame(panel, width, height)
 		DisableClipping(clipping)
 	end
 	
-	if panel:IsHovered() or panel:IsChildHovered() then surface.SetDrawColor(self.frame)
-	else surface.SetDrawColor(self.frame_unfocused) end
-	
-	surface.DrawRect(0, 0, width, height)
+	--if panel:IsHovered() or panel:IsChildHovered() then surface.SetDrawColor(self.frame)
+	--if panel:HasHierarchicalFocus() or panel:HasFocus() then surface.SetDrawColor(self.frame)
+	if panel.PecanFocused then
+		surface.SetDrawColor(self.frame)
+		surface.DrawRect(0, 0, width, height)
+		
+		surface.SetDrawColor(self.frame_header)
+		surface.DrawRect(0, 0, width, 24)
+	else
+		surface.SetDrawColor(self.frame_unfocused)
+		surface.DrawRect(0, 0, width, height)
+		
+		surface.SetDrawColor(self.frame_header_unfocused)
+		surface.DrawRect(0, 0, width, 24)
+	end
 end
 
 function SKIN:PaintPropertySheet(panel, width, height)
@@ -223,6 +245,26 @@ function SKIN:PaintTree(panel, width, height)
 	if panel.m_bBackground then
 		surface.SetDrawColor(self.tree)
 		surface.DrawRect(0, 0, width, height)
+	end
+end
+
+function SKIN:PaintWindowCloseButton(panel, width, height)
+	if panel.m_bBackground then
+		if panel.Depressed or panel:IsSelected() or panel:GetToggle() then
+			panel:SetTextColor(self.text_bright)
+			surface.SetDrawColor(self.close_button_down)
+		elseif panel:GetDisabled() then
+			panel:SetTextColor(self.text_dark)
+			surface.SetDrawColor(self.close_button_dead)
+		elseif panel.Hovered then
+			panel:SetTextColor(self.text_normal)
+			surface.SetDrawColor(self.close_button_hovered)
+		else
+			panel:SetTextColor(self.text_normal)
+			surface.SetDrawColor(self.close_button)
+		end
+		
+		surface.DrawRect(0, 2, width, height - 4)
 	end
 end
 

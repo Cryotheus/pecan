@@ -125,7 +125,6 @@ function PANEL:Init()
 		header:Dock(TOP)
 		header:SetHeight(self.HeaderHeight)
 		header:SetMouseInputEnabled(true)
-		header:SetSkin("Pecan")
 		
 		header.Editor = self
 		self.Header = header

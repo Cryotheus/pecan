@@ -1,6 +1,7 @@
 local PANEL = {}
 
 --panel functions
+--TODO: just open a texture editor if there is only one texture
 function PANEL:AddSubmaterials(entity)
 	local materials = entity:GetMaterials()
 	local scroller = self.Scroller
@@ -54,17 +55,11 @@ function PANEL:AddSubmaterials(entity)
 end
 
 function PANEL:Init()
-	local width, height = 384, 512 + 24
-	self.PerformLayoutInternal = vgui.GetControlTable("DFrame").PerformLayout
-	
 	self:DockPadding(0, 24, 0, 0)
 	self:SetKeyboardInputEnabled(true)
-	self:SetMinimumSize(width, height)
 	self:SetMouseInputEnabled(true)
-	self:SetSizable(true)
-	self:SetSize(width, height)
-	self:SetSkin("Pecan")
 	self:SetTitle("Submaterial Selector")
+	self:SetupSizes(384, 512 + 24)
 	
 	do --scroll panel
 		local scroller = vgui.Create("DScrollPanel", self)
@@ -79,6 +74,4 @@ function PANEL:Init()
 end
 
 --post
-derma.DefineControl("PecanSubmaterialSelector", "A material selection panel for Pecan.", PANEL, "DFrame")
-
---$basetexture
+derma.DefineControl("PecanSubmaterialSelector", "A material selection panel for Pecan.", PANEL, "PecanFrame")
