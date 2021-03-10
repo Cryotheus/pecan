@@ -1,5 +1,5 @@
 local focused_panel
-local PANEL = {}
+local PANEL = {PecanFocusable = true}
 
 --panel functions
 function PANEL:Init()

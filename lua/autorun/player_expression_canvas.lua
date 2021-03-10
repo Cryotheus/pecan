@@ -6,6 +6,12 @@ local config = {
 	autorun = {player_expression_canvas = 4},	--100
 	
 	player_expression_canvas = {
+		editor = {
+			context_menu = 5,	--00 101
+			main = 21,			--10 101
+			render = 29			--11 101
+		},
+		
 		panels = {
 			editor = 5,
 			frame = 5,
@@ -20,10 +26,8 @@ local config = {
 			texture_selector = 5
 		},
 		
-		editor = {
-			context_menu = 5,	--00 101
-			main = 21,			--10 101
-			render = 29			--11 101
+		render_target = {
+			kernel = 13	--1 101
 		},
 		
 		client = 13,	--1 101
@@ -105,6 +109,8 @@ local function load_scripts(command_reload)
 end
 
 --concommands
+concommand.Add("pecan_debug", function() PrintTable(PECAN, 1) end, nil, "Print the PECAN global table.")
+
 concommand.Add("pecan_reload", function(ply)
 	--is it possible to run a command from client and execute the serverside command when the command is shared?
 	if not IsValid(ply) or ply:IsSuperAdmin() or LocalPlayer and ply == LocalPlayer() then load_scripts(true) end

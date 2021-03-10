@@ -4,7 +4,7 @@ local call_translate_position = false
 local cursor_start_x, cursor_start_y
 local cursor_translate_x, cursor_translate_y
 local moving = false
-local PANEL = {}
+local PANEL = {PecanEditor = true}
 local speed = 1
 local translate_position = vector_origin
 local think_time = RealTime()
