@@ -60,7 +60,8 @@ function PANEL:TextureEntrySelected(texture_entry)
 	--show a texture canvas to explore the texture
 	--show buttons to substitute the texture or create new render target texture
 	
-	if self.SelectedTextureEntry ~= texture_entry then self:UpdateSidebar(texture_entry) end
+	if self.SelectedTextureEntry == texture_entry then self:UpdateSidebar()
+	else self:UpdateSidebar(texture_entry) end
 end
 
 function PANEL:SetMaterial(material)

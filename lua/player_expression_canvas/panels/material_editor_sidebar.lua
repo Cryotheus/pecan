@@ -5,29 +5,35 @@ function PANEL:Init()
 	self:DockMargin(4, 4, 4, 4)
 	
 	do --info
-		local panel = vgui.Create("DPanel", self)
-		
-		panel:Dock(TOP)
-		panel:SetHeight(48)
-		
-		function panel:Paint(width, height)
-			surface.SetDrawColor(45, 45, 50)
-			surface.DrawRect(0, 0, width, height)
-		end
+		----info panel sizer
+			local panel_info = vgui.Create("DSizeToContents", self)
+			
+			panel_info:Dock(TOP)
+			panel_info:SetHeight(48)
+			
+			function panel_info:Paint(width, height)
+				surface.SetDrawColor(45, 45, 50)
+				surface.DrawRect(0, 0, width, height)
+			end
+			
+			function panel_info:PerformLayout(width, height)
+				self:SizeToChildren(false, true)
+				self:SetHeight(self:GetTall() + 4)
+			end
 		
 		do --tool bar
 			----tool bar
-				local toolbar = vgui.Create("DPanel", panel)
+				local toolbar = vgui.Create("DPanel", panel_info)
 				
 				toolbar:Dock(TOP)
 				toolbar:DockPadding(4, 4, 4, 4)
 				
 				function toolbar:Paint(width, height)
-					surface.SetDrawColor(50, 50, 54)
+					surface.SetDrawColor(40, 40, 45)
 					surface.DrawRect(0, 0, width, height)
 				end
 				
-				panel.Toolbar = toolbar
+				panel_info.Toolbar = toolbar
 			
 			do --edit
 				local button = vgui.Create("PecanIconButton", toolbar)
@@ -73,7 +79,31 @@ function PANEL:Init()
 			end
 		end
 		
-		self.PanelInfo = panel
+		do --texture name
+			local label = vgui.Create("DLabel", panel_info)
+			
+			label:Dock(TOP)
+			label:DockMargin(4, 4, 4, 0)
+			label:SetAutoStretchVertical(true)
+			label:SetText("Select a texture from the left")
+			label:SetWrap(true)
+			
+			panel_info.LabelName = label
+		end
+		
+		do --dimensions
+			local label = vgui.Create("DLabel", panel_info)
+			
+			label:Dock(TOP)
+			label:DockMargin(4, 4, 4, 0)
+			label:SetAutoStretchVertical(true)
+			label:SetText("")
+			label:SetVisible(false)
+			
+			panel_info.LabelDimensions = label
+		end
+		
+		self.PanelInfo = panel_info
 	end
 	
 	do --texture viewer
@@ -87,16 +117,31 @@ function PANEL:Init()
 	end
 end
 
+function PANEL:Paint() end
+
 function PANEL:SetOpaque(...) self.TextureViewer:SetOpaque(...) end
 
 function PANEL:SetTexture(texture_entry)
+	local panel_info = self.PanelInfo
+	
 	if texture_entry then
 		local texture = texture_entry.Texture
 		local texture_viewer = self.TextureViewer
+		local texture_viewer_texture_panel = texture_viewer.Texture
 		
 		texture_viewer:SetTexture(texture)
 		texture_viewer:SetVisible(true)
-	else self.TextureViewer:SetVisible(false) end
+		
+		panel_info.LabelDimensions:SetText("Size: " .. texture_viewer_texture_panel.TextureWidth .. " x " .. texture_viewer_texture_panel.TextureHeight)
+		panel_info.LabelName:SetText("Name: " .. texture:GetName())
+		
+		panel_info.LabelDimensions:SetVisible(true)
+	else
+		self.TextureViewer:SetVisible(false)
+		
+		panel_info.LabelDimensions:SetVisible(false)
+		panel_info.LabelName:SetText("Select a texture from the left")
+	end
 end
 
 --post

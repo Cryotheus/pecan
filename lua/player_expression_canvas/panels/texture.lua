@@ -19,30 +19,39 @@ function PANEL:Init()
 	self:SetKeyboardInputEnabled(false)
 	self:SetMouseInputEnabled(false)
 	
+	self.AlwaysPoint = false
+	self.Opaque = false
 	self.PointOverlay = false --should we draw the overlay with point sampling too?
 	
 	--32 is the error texture's size
-	self.Opaque = false
 	self.TextureHeight = 32
 	self.TextureWidth = 32
 end
 
 function PANEL:Paint(width, height)
-	render.PushFilterMag(TEXFILTER.POINT)
-	render.PushFilterMin(TEXFILTER.POINT)
-	
-	surface.SetDrawColor(255, 255, 255)
-	surface.SetMaterial(self.Material)
-	surface.DrawTexturedRect(0, 0, width, height)
-	
-	if self.PointOverlay then
-		self:PaintOverlay(width, height)
+	if self.AlwaysPoint or width > self.TextureWidth and height > self.TextureHeight then
+		render.PushFilterMag(TEXFILTER.POINT)
+		render.PushFilterMin(TEXFILTER.POINT)
 		
-		render.PopFilterMag()
-		render.PopFilterMin()
+		surface.SetDrawColor(255, 255, 255)
+		surface.SetMaterial(self.Material)
+		surface.DrawTexturedRect(0, 0, width, height)
+		
+		if self.PointOverlay then
+			self:PaintOverlay(width, height)
+			
+			render.PopFilterMag()
+			render.PopFilterMin()
+		else
+			render.PopFilterMag()
+			render.PopFilterMin()
+			
+			self:PaintOverlay(width, height)
+		end
 	else
-		render.PopFilterMag()
-		render.PopFilterMin()
+		surface.SetDrawColor(255, 255, 255)
+		surface.SetMaterial(self.Material)
+		surface.DrawTexturedRect(0, 0, width, height)
 		
 		self:PaintOverlay(width, height)
 	end
@@ -54,14 +63,14 @@ function PANEL:Resize(size) self:SetSize(self:GetTextureSizeScaled(size)) end
 function PANEL:SetOpaque(opaque)
 	if opaque ~= self.Opaque then
 		--if there is an existing texture update it
-		if self.Texture then hook.Call("PecankGetDisplayMaterial", PECAN, self.Texture, opaque) end
+		if self.Texture then hook.Call("PecankGetDisplayTextureMaterial", PECAN, self.Texture, opaque) end
 		
 		self.Opaque = opaque
 	end
 end
 
 function PANEL:SetTexture(texture, opaque)
-	local material = hook.Call("PecankGetDisplayMaterial", PECAN, texture, self.Opaque)
+	local material = hook.Call("PecankGetDisplayTextureMaterial", PECAN, texture, self.Opaque)
 	local texture = material:GetTexture("$basetexture")
 	local texture_id = surface.GetTextureID(texture:GetName())
 	

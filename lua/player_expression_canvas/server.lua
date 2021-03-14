@@ -1,4 +1,5 @@
 resource.AddSingleFile("materials/icon64/player_expressive_canvas.png")
+resource.AddSingleFile("materials/player_expressive_canvas/stickers/pecan.png")
 util.AddNetworkString("pecan_apply")
 
 --pecan functions

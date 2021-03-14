@@ -25,11 +25,7 @@ local config = {
 			texture = 5,
 			texture_display = 5,
 			texture_entry = 5,
-			texture_viewer = 5,
-			
-			--texture_canvas = 5,
-			--texture_editor = 5,
-			--texture_selector = 5,
+			texture_viewer = 5
 		},
 		
 		render = {

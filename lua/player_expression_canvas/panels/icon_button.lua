@@ -22,10 +22,6 @@ function PANEL:Paint(width, height)
 	end
 end
 
-function SKIN:PaintButton(panel, width, height)
-
-end
-
 function PANEL:PerformLayout() self:SetSize(16, 16) end
 
 function PANEL:SetIcon(icon, tooltip)

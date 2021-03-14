@@ -16,14 +16,8 @@ function PANEL:PerformLayout(width, height)
 	material:Center()
 end
 
-function PANEL:SetMaterial(material)
-	if isstring(material) then material = Material(material) end
-	
-	if material then
-		self.Material.Material = material
-		
-		return material
-	end
+function PANEL:SetMaterial(material_name)
+	if material_name then return self.Material:SetMaterial(material_name) end
 	
 	return false
 end
