@@ -19,12 +19,9 @@ function PANEL:PerformLayout(width, height)
 	texture:Center()
 end
 
+function PANEL:SetOpaque(...) self.Texture:SetOpaque(...) end
+
 function PANEL:SetTexture(texture)
-	if not isnumber(texture) then
-		if isstring(texture) then texture = surface.GetTextureID(texture)
-		elseif texture.GetName then texture = surface.GetTextureID(texture:GetName()) end
-	end
-	
 	if texture then
 		self.Texture:SetTexture(texture)
 		

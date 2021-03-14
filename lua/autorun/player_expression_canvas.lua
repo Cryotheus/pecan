@@ -9,30 +9,35 @@ local config = {
 		editor = {
 			context_menu = 5,	--00 101
 			main = 21,			--10 101
-			render = 29			--11 101
+			render = 29,		--11 101
+			skin = 5			--0 101
 		},
 		
 		panels = {
 			editor = 5,
 			frame = 5,
+			icon_button = 5,
 			material = 5,
 			material_display = 5,
 			material_editor = 5,
+			material_editor_sidebar = 5,
 			submaterial_selector = 5,
 			texture = 5,
-			texture_canvas = 5,
 			texture_display = 5,
-			texture_editor = 5,
-			texture_selector = 5
+			texture_entry = 5,
+			texture_viewer = 5,
+			
+			--texture_canvas = 5,
+			--texture_editor = 5,
+			--texture_selector = 5,
 		},
 		
-		render_target = {
+		render = {
 			kernel = 13	--1 101
 		},
 		
 		client = 13,	--1 101
-		server = 10,	--1 010
-		skin = 5		--0 101
+		server = 10		--1 010
 	}
 }
 

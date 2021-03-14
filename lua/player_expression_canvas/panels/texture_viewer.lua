@@ -52,9 +52,11 @@ function PANEL:OnMouseReleased(code)
 end
 
 function PANEL:OnMouseWheeled(delta)
-	local panel = self.Texture
-	
-	self:Resize(math.Clamp(panel:GetWide() * (delta > 0 and 1.1 or 0.9), 16, 16384), panel:LocalCursorPos())
+	if not translating then
+		local panel = self.Texture
+		
+		self:Resize(math.Clamp(panel:GetWide() * (delta > 0 and 1.1 or 0.9), 16, 16384), panel:LocalCursorPos())
+	end
 end
 
 function PANEL:OnRemove() if translating == self then translating = false end end
@@ -86,5 +88,13 @@ end
 
 function PANEL:Think() if translating == self then self.Texture:SetPos(gui.MouseX() - start_x + self.StartX, gui.MouseY() - start_y + self.StartY) end end
 
+function PANEL:ToggleOpacity()
+	local texture = self.Texture
+	
+	print("toggle", not texture.Opaque)
+	
+	texture:SetOpaque(not texture.Opaque)
+end
+
 --post
-derma.DefineControl("PecanTextureCanvas", "A texture canvas for Pecan.", PANEL, "PecanTextureDisplay")
+derma.DefineControl("PecanTextureViewer", "A texture viewer for Pecan.", PANEL, "PecanTextureDisplay")

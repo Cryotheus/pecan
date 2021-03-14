@@ -11,6 +11,7 @@ function PANEL:Init()
 	
 	self:PecanFocus()
 	self:SetDraggable(true)
+	self.btnClose:SetTooltip("Close")
 	self.btnMaxim:SetVisible(false)
 	self.btnMinim:SetVisible(false)
 end

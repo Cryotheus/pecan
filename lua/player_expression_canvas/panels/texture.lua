@@ -20,9 +20,9 @@ function PANEL:Init()
 	self:SetMouseInputEnabled(false)
 	
 	self.PointOverlay = false --should we draw the overlay with point sampling too?
-	self.Texture = surface.GetTextureID("matsys_regressiontest/background")
 	
 	--32 is the error texture's size
+	self.Opaque = false
 	self.TextureHeight = 32
 	self.TextureWidth = 32
 end
@@ -32,7 +32,7 @@ function PANEL:Paint(width, height)
 	render.PushFilterMin(TEXFILTER.POINT)
 	
 	surface.SetDrawColor(255, 255, 255)
-	surface.SetTexture(self.Texture)
+	surface.SetMaterial(self.Material)
 	surface.DrawTexturedRect(0, 0, width, height)
 	
 	if self.PointOverlay then
@@ -51,11 +51,27 @@ end
 function PANEL:PaintOverlay(width, height) end
 function PANEL:Resize(size) self:SetSize(self:GetTextureSizeScaled(size)) end
 
-function PANEL:SetTexture(texture_id)
+function PANEL:SetOpaque(opaque)
+	if opaque ~= self.Opaque then
+		--if there is an existing texture update it
+		if self.Texture then hook.Call("PecankGetDisplayMaterial", PECAN, self.Texture, opaque) end
+		
+		self.Opaque = opaque
+	end
+end
+
+function PANEL:SetTexture(texture, opaque)
+	local material = hook.Call("PecankGetDisplayMaterial", PECAN, texture, self.Opaque)
+	local texture = material:GetTexture("$basetexture")
+	local texture_id = surface.GetTextureID(texture:GetName())
+	
+	self.Texture = texture
 	self.TextureWidth, self.TextureHeight = surface.GetTextureSize(texture_id)
-	self.Texture = texture_id
+	self.Material = material
 	
 	self:Resize()
+	
+	return texture, material
 end
 
 --post

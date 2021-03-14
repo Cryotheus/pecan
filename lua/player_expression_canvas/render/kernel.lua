@@ -1,10 +1,10 @@
 local color_black_transparent = Color(0, 0, 0, 0)
+local display_materials = {}
 local kernel = {}
 local max_render_targets = 64
 local render_target_resolution = 2 ^ 10 --1024
 
 --local tables
-
 local render_target_store = {
 	--[[ how render_target_store works
 		each entry is a variant that can be used
@@ -43,6 +43,7 @@ local render_target_store = {
 }
 
 --globals
+kernel.DisplayMaterials = display_materials
 kernel.RenderTargets = render_target_store
 PECAN.Kernel = kernel
 
@@ -56,6 +57,24 @@ function PECAN:PecankAllocateRenderTarget(variant, index)
 	render.ClearRenderTarget(render_taget, color_black_transparent)
 	
 	return render_taget
+end
+
+function PECAN:PecankCreateDisplayMaterial(texture, texture_name, opaque)
+	local opaque = 0--opaque and 0 or 1
+	local material = CreateMaterial("pecan_display_" .. texture_name, "UnlitGeneric",
+		{
+			["$basetexture"] = "color/white",
+			["$translucent"] = opaque,
+			["$vertexalpha"] = opaque,
+			["$vertexcolor"] = 1
+		}
+	)
+	
+	material:SetTexture("$basetexture", texture)
+	
+	display_materials[texture_name] = material
+	
+	return material, new_texture
 end
 
 function PECAN:PecankCreateRenderTarget(variant, width, height, inactive, force)
@@ -84,6 +103,44 @@ function PECAN:PecankCreateRenderTarget(variant, width, height, inactive, force)
 		
 		return render_taget, name
 	else return false, false end
+end
+
+function PECAN:PecankGetDisplayMaterial(texture, opaque)
+	local texture = isstring(texture) and display_materials[texture] or texture
+	local texture_name = texture:GetName()
+	local texture_stored_material = display_materials[texture_name]
+	
+	if texture_stored_material then
+		local flags = texture_stored_material:GetInt("$flags")
+		local translucent = bit.band(flags, 2097184) == 2097184
+		
+		print("flags: " .. flags)
+		print("opaque request: ", opaque)
+		print("translucency: " .. tostring(translucent))
+		
+		if opaque ~= nil and opaque == translucent then
+			local new_flags = opaque and 16 or 2097200
+			
+			texture_stored_material:SetInt("$flags", new_flags)
+			
+			print("change translucency", flags, texture_stored_material:GetInt("$flags"), new_flags)
+		end
+		
+		texture_stored_material:SetTexture("$basetexture", texture)
+		
+		return texture_stored_material
+	else return hook.Call("PecankCreateDisplayMaterial", self, texture, texture_name, opaque) end
+	
+	return false
+end
+
+function PECAN:PecankGetDisplayTexture(...)
+	--because we want an UnlitGeneric material
+	local material = hook.Call("PecankCreateDisplayMaterial", self, ...)
+	
+	if material then return material:GetTexture("$basetexture") end
+	
+	return false
 end
 
 function PECAN:PecankGetRenderTarget(variant, index, width, height)

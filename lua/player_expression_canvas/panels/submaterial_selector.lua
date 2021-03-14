@@ -20,23 +20,20 @@ function PANEL:AddSubmaterials(entity)
 			button:DockMargin(0, 0, 4, 4)
 			button:SetHeight(128)
 			button:SetText(button_text)
+			button:SetTooltip("Open a material editor with this texture")
 			
 			function button:DoClick()
-				local texture_selector = self.TextureSelector
+				local material_editor = button.MaterialEditor
 				
-				if texture_selector then
-					texture_selector:Remove()
-					
-					self.TextureSelector = nil
+				if material_editor then material_editor:PecanFocus()
 				else
-					texture_selector = vgui.Create("PecanTextureSelector", PECAN.Editor)
-					texture_selector.SubmaterialSelector = self
+					material_editor = vgui.Create("PecanMaterialEditor", PECAN.Editor)
+					material_editor.ButtonSubmaterialSelector = button
 					
-					texture_selector:AddTextures(material_path)
-					texture_selector:SetPos(hook.Call("PecaneOpenPanel", PECAN, self, texture_selector))
-					texture_selector:SetTitle("Texture Selector - " .. button_text)
+					material_editor:SetMaterial(material_path)
+					material_editor:SetPos(hook.Call("PecaneOpenPanel", PECAN, button, material_editor))
 					
-					self.TextureSelector = texture_selector
+					button.MaterialEditor = material_editor
 				end
 			end
 			

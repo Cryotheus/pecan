@@ -18,14 +18,17 @@ function PECAN:PecaneOpen()
 		local world_panel = vgui.GetWorldPanel()
 		
 		if not focusable.PecanFocusable then
+			local itterations = 0
+			
 			repeat
-				focusable = panel:GetParent()
+				itterations = itterations + 1
+				focusable = focusable:GetParent()
 				
-				if focusable.PecanEditor or focusable == hud_panel or focusable == world_panel then return end
+				if itterations > 20 or not focusable or focusable.PecanEditor or focusable == hud_panel or focusable == world_panel then return end
 			until focusable.PecanFocusable
 		end
 		
-		hook.Call("PecaneMousePressedFocusable", PECAN, panel, focusable, ...)
+		if focusable then hook.Call("PecaneMousePressedFocusable", PECAN, panel, focusable, ...) end
 	end)
 end
 

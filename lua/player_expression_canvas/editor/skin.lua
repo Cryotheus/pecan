@@ -82,7 +82,7 @@ local SKIN = {
 	button_hovered =	Color(80, 80, 90),
 	
 	close_button_down =		Color(224, 0, 0),
-	close_button_dead =		Color(54, 54, 60),
+	close_button_dead =		Color(48, 48, 51),
 	close_button_hovered =	Color(192, 48, 48),
 	close_button =			Color(192, 0, 0),
 	
@@ -93,10 +93,10 @@ local SKIN = {
 	
 	shadow =			Color(0, 0, 0, 128),
 	
-	--[[text_bright =		Color(255, 255, 255),
+	text_bright =		Color(255, 255, 255),
 	text_normal =		Color(240, 240, 240),
-	text_dark =			Color(255, 20, 20),
-	text_highlight =	Color(255, 20, 20)]]
+	text_dark =			Color(192, 192, 192),
+	text_highlight =	Color(255, 20, 20)
 }
 
 --local functions
