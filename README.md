@@ -9,8 +9,8 @@ Pecan is an addon for Garry's Mod that allows players to modify the individual t
 See the progress of this addon's development on the [Discord](https://discord.gg/WMeCsQhakH).  
 Current stage in development:  
 **Not functional**
-1. **Concept**
-2. PoC
+1. ~~Concept~~
+2. **PoC**
 3. Alpha
 4. Beta
 5. Silent release
